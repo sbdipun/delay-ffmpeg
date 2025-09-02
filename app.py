@@ -34,7 +34,7 @@ def fft_cross_correlation(ref_signal, target_signal, sr):
     delay_sec = delay_index / sr
     return delay_sec * 1000  # ms
 
-@app.route('/detect-delay', methods=['POST'])
+@app.route('/delay', methods=['POST'])
 def detect_delay():
     data = request.get_json()
     hindi_url = data.get('hindi_url')
