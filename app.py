@@ -34,14 +34,13 @@ def fft_cross_correlation(ref_signal, target_signal, sr):
     delay_sec = delay_index / sr
     return delay_sec * 1000  # ms
 
-@app.route('/delay', methods=['POST'])
-def detect_delay():
-    data = request.get_json()
-    hindi_url = data.get('hindi_url')
-    english_url = data.get('english_url')
+@app.route('/', methods=['GET'])
+def get_delay():
+    hindi_url = request.args.get('delay')
+    english_url = request.args.get('videourl')
 
     if not hindi_url or not english_url:
-        return jsonify({"error": "Missing URLs."}), 400
+        return jsonify({"error": "Missing query parameters: delay (audio URL) and videourl (video URL) required."}), 400
 
     try:
         download_partial_audio(hindi_url, "hindi.wav")
@@ -71,4 +70,3 @@ def detect_delay():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
-
