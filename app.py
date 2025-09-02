@@ -38,15 +38,17 @@ def fft_cross_correlation(ref_signal, target_signal, sr):
 def get_delay():
     hindi_url = request.args.get('delay')
     english_url = request.args.get('videourl')
+    hindi_file = "hindi.wav"
+    english_file = "english.wav"
 
     if not hindi_url or not english_url:
         return jsonify({"error": "Missing query parameters: delay (audio URL) and videourl (video URL) required."}), 400
 
     try:
-        download_partial_audio(hindi_url, "hindi.wav")
-        download_partial_audio(english_url, "english.wav")
-        hindi, sr1 = read_audio("hindi.wav")
-        english, sr2 = read_audio("english.wav")
+        download_partial_audio(hindi_url, hindi_file)
+        download_partial_audio(english_url, english_file)
+        hindi, sr1 = read_audio(hindi_file)
+        english, sr2 = read_audio(english_file)
 
         if sr1 != sr2:
             return jsonify({"error": "Sample rates don't match."}), 400
@@ -67,6 +69,13 @@ def get_delay():
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        for fname in [hindi_file, english_file]:
+            try:
+                if os.path.exists(fname):
+                    os.remove(fname)
+            except Exception:
+                pass
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
