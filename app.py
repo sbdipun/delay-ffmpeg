@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-def download_partial_audio(url, output_path, duration=60):
+def download_partial_audio(url, output_path, duration=240):
     cmd = [
         'ffmpeg', '-y', '-ss', '0', '-t', str(duration),
         '-i', url,
